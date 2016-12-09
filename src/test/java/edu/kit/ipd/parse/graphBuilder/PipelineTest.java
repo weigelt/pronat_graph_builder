@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.kit.ipd.multiasr.MultiASRPipelineStage;
@@ -33,6 +34,7 @@ public class PipelineTest {
 		masr.init();
 	}
 
+	@Ignore
 	@Test
 	public void fullPipelineTest() {
 		ppd = new PrePipelineData();
