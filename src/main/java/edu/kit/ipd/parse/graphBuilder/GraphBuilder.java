@@ -156,7 +156,7 @@ public class GraphBuilder implements IPipelineStage {
 				alternativeToken.setAttributeValue("asrConfidence", altHyp.getConfidence());
 				alternativeToken.setAttributeValue("startTime", altHyp.getStartTime());
 				alternativeToken.setAttributeValue("endTime", altHyp.getEndTime());
-				final IArc altRel = graph.createArc(node, alternativeToken, arcType);
+				final IArc altRel = graph.createArc(node, alternativeToken, altRelType);
 				altRel.setAttributeValue("number", i);
 			}
 
@@ -164,8 +164,8 @@ public class GraphBuilder implements IPipelineStage {
 			if (lastNode != null) {
 				final IArc arc = graph.createArc(lastNode, node, arcType);
 				arc.setAttributeValue("value", "NEXT");
-				lastNode = node;
 			}
+			lastNode = node;
 		}
 		return graph;
 	}
