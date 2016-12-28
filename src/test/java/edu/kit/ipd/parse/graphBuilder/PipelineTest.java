@@ -10,10 +10,10 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import edu.kit.ipd.multiasr.MultiASRPipelineStage;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.data.PrePipelineData;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
+import edu.kit.ipd.parse.multiasr.MultiASRPipelineStage;
 import edu.kit.ipd.parse.shallownlp.ShallowNLP;
 
 public class PipelineTest {
