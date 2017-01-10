@@ -213,7 +213,7 @@ public class GraphBuilder implements IPipelineStage {
 		Token last = srlToken;
 		for (Token verb : srlToken.getVerbTokens()) {
 			IArc arc = graph.createArc(nodesForTokens.get(last), nodesForTokens.get(verb), srlArcType);
-			setSharedSRLArcInfos(srlToken, arc);
+			setSharedSRLArcInfos(srlToken, arc, "V");
 			last = verb;
 		}
 		for (String role : srlToken.getDependentRoles()) {
@@ -221,7 +221,7 @@ public class GraphBuilder implements IPipelineStage {
 				last = srlToken;
 				for (Token roleToken : srlToken.getTokensOfRole(role)) {
 					IArc arc = graph.createArc(nodesForTokens.get(last), nodesForTokens.get(roleToken), srlArcType);
-					setSharedSRLArcInfos(srlToken, arc);
+					setSharedSRLArcInfos(srlToken, arc, role);
 					String[] roleDescription;
 					if ((roleDescription = srlToken.getRoleDescriptions(role)) != null) {
 
@@ -236,7 +236,8 @@ public class GraphBuilder implements IPipelineStage {
 		}
 	}
 
-	private void setSharedSRLArcInfos(SRLToken srlToken, IArc arc) {
+	private void setSharedSRLArcInfos(SRLToken srlToken, IArc arc, String role) {
+		arc.setAttributeValue("role", role);
 		arc.setAttributeValue("correspondingVerb", srlToken.getCorrespondingVerb());
 		arc.setAttributeValue("roleConfidence", srlToken.getRoleConfidence());
 		arc.setAttributeValue("propBankRolesetID", srlToken.getPbRolesetID());
