@@ -59,6 +59,7 @@
 		<dependency>
 			<groupId>edu.kit.ipd.parse</groupId>
 			<artifactId>SRLabeler</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>
