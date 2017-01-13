@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>edu.kit.ipd.parse</groupId>
 	<artifactId>graphBuilder</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<build>
 		<plugins>
 			<plugin>
@@ -55,6 +55,10 @@
 		<dependency>
 			<groupId>org.kohsuke.metainf-services</groupId>
 			<artifactId>metainf-services</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>edu.kit.ipd.parse</groupId>
+			<artifactId>SRLabeler</artifactId>
 		</dependency>
 	</dependencies>
 </project>

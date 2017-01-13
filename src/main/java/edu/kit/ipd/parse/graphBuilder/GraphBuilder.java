@@ -1,5 +1,8 @@
 package edu.kit.ipd.parse.graphBuilder;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -12,6 +15,7 @@ import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.data.PipelineDataCastException;
 import edu.kit.ipd.parse.luna.data.PrePipelineData;
 import edu.kit.ipd.parse.luna.data.token.AlternativeHypothesisToken;
+import edu.kit.ipd.parse.luna.data.token.SRLToken;
 import edu.kit.ipd.parse.luna.data.token.Token;
 import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IArcType;
@@ -34,6 +38,7 @@ public class GraphBuilder implements IPipelineStage {
 	private static final String TOKEN_NODE_TYPE = "token";
 	private static final String ALTERNATIVE_ARC_TYPE = "alternative";
 	private static final String ALTERNATIVE_TOKEN_NODE_TYPE = "alternative_token";
+	private static final String SRL_ARC_TYPE = "srl";
 
 	private PrePipelineData prePipeData;
 
@@ -130,6 +135,9 @@ public class GraphBuilder implements IPipelineStage {
 
 		altRelType.addAttributeToType("int", "number");
 
+		HashMap<Token, INode> nodesForTokens = new HashMap<>();
+		HashSet<SRLToken> srlTokens = new HashSet<>();
+
 		INode lastNode = null;
 		for (final Token tok : tokens) {
 			final INode node = graph.createNode(wordType);
@@ -147,6 +155,7 @@ public class GraphBuilder implements IPipelineStage {
 			node.setAttributeValue("endTime", tok.getEndTime());
 			node.setAttributeValue("alternativesCount", tok.getAlternatives().size());
 
+			nodesForTokens.put(tok, node);
 			for (int i = 0; i < tok.getAlternatives().size(); i++) {
 				final AlternativeHypothesisToken altHyp = tok.getAlternative(i);
 				final INode alternativeToken = graph.createNode(altType);
@@ -165,9 +174,77 @@ public class GraphBuilder implements IPipelineStage {
 				final IArc arc = graph.createArc(lastNode, node, arcType);
 				arc.setAttributeValue("value", "NEXT");
 			}
+
+			if (tok instanceof SRLToken) {
+				srlTokens.add((SRLToken) tok);
+			}
+
 			lastNode = node;
 		}
+
+		if (!srlTokens.isEmpty()) {
+			IArcType srlArcType;
+
+			if (graph.hasArcType(SRL_ARC_TYPE)) {
+				srlArcType = graph.getArcType(SRL_ARC_TYPE);
+			} else {
+				srlArcType = graph.createArcType(SRL_ARC_TYPE);
+				srlArcType.addAttributeToType("String", "role");
+				srlArcType.addAttributeToType("String", "pbRole");
+				srlArcType.addAttributeToType("String", "vnRole");
+				srlArcType.addAttributeToType("String", "fnRole");
+				srlArcType.addAttributeToType("Double", "roleConfidence");
+				srlArcType.addAttributeToType("String", "correspondingVerb");
+				srlArcType.addAttributeToType("String", "propBankRolesetID");
+				srlArcType.addAttributeToType("String", "propBankRolesetDescr");
+				srlArcType.addAttributeToType("String", "verbNetFrames");
+				srlArcType.addAttributeToType("String", "frameNetFrames");
+				srlArcType.addAttributeToType("String", "eventTypes");
+			}
+
+			for (SRLToken srlToken : srlTokens) {
+				createSRLArcs(srlToken, srlArcType, nodesForTokens, graph);
+			}
+		}
 		return graph;
+	}
+
+	private void createSRLArcs(SRLToken srlToken, IArcType srlArcType, HashMap<Token, INode> nodesForTokens, IGraph graph) {
+		Token last = srlToken;
+		for (Token verb : srlToken.getVerbTokens()) {
+			IArc arc = graph.createArc(nodesForTokens.get(last), nodesForTokens.get(verb), srlArcType);
+			setSharedSRLArcInfos(srlToken, arc, "V");
+			last = verb;
+		}
+		for (String role : srlToken.getDependentRoles()) {
+			if (!role.equals("V")) {
+				last = srlToken;
+				for (Token roleToken : srlToken.getTokensOfRole(role)) {
+					IArc arc = graph.createArc(nodesForTokens.get(last), nodesForTokens.get(roleToken), srlArcType);
+					setSharedSRLArcInfos(srlToken, arc, role);
+					String[] roleDescription;
+					if ((roleDescription = srlToken.getRoleDescriptions(role)) != null) {
+
+						arc.setAttributeValue("pbRole", roleDescription[0]);
+						arc.setAttributeValue("vnRole", roleDescription[1]);
+						arc.setAttributeValue("fnRole", roleDescription[2]);
+
+					}
+					last = roleToken;
+				}
+			}
+		}
+	}
+
+	private void setSharedSRLArcInfos(SRLToken srlToken, IArc arc, String role) {
+		arc.setAttributeValue("role", role);
+		arc.setAttributeValue("correspondingVerb", srlToken.getCorrespondingVerb());
+		arc.setAttributeValue("roleConfidence", srlToken.getRoleConfidence());
+		arc.setAttributeValue("propBankRolesetID", srlToken.getPbRolesetID());
+		arc.setAttributeValue("propBankRolesetDescr", srlToken.getPbRolesetDescr());
+		arc.setAttributeValue("verbNetFrames", Arrays.toString(srlToken.getVnFrames()));
+		arc.setAttributeValue("frameNetFrames", Arrays.toString(srlToken.getFnFrames()));
+		arc.setAttributeValue("eventTypes", Arrays.toString(srlToken.getEventTypes()));
 	}
 
 	@Override

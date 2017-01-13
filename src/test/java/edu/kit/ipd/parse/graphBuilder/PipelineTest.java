@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.luna.data.MissingDataException;
@@ -15,12 +14,14 @@ import edu.kit.ipd.parse.luna.data.PrePipelineData;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
 import edu.kit.ipd.parse.multiasr.MultiASRPipelineStage;
 import edu.kit.ipd.parse.shallownlp.ShallowNLP;
+import edu.kit.ipd.parse.srlabeler.SRLabeler;
 
 public class PipelineTest {
 
 	private static GraphBuilder gb;
 	private static ShallowNLP snlp;
 	private static MultiASRPipelineStage masr;
+	private static SRLabeler srl;
 
 	PrePipelineData ppd;
 
@@ -30,11 +31,12 @@ public class PipelineTest {
 		gb.init();
 		snlp = new ShallowNLP();
 		snlp.init();
+		srl = new SRLabeler();
+		srl.init();
 		masr = new MultiASRPipelineStage();
 		masr.init();
 	}
 
-	@Ignore
 	@Test
 	public void fullPipelineTest() {
 		ppd = new PrePipelineData();
@@ -50,6 +52,7 @@ public class PipelineTest {
 		try {
 			masr.exec(ppd);
 			snlp.exec(ppd);
+			srl.exec(ppd);
 			gb.exec(ppd);
 		} catch (final PipelineStageException e) {
 			// TODO Auto-generated catch block
