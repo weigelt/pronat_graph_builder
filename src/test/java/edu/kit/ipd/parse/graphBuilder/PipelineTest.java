@@ -7,12 +7,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.data.PrePipelineData;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
+import edu.kit.ipd.parse.luna.tools.StringToHypothesis;
 import edu.kit.ipd.parse.multiasr.MultiASRPipelineStage;
+import edu.kit.ipd.parse.ner.NERTagger;
 import edu.kit.ipd.parse.shallownlp.ShallowNLP;
 import edu.kit.ipd.parse.srlabeler.SRLabeler;
 
@@ -22,6 +25,7 @@ public class PipelineTest {
 	private static ShallowNLP snlp;
 	private static MultiASRPipelineStage masr;
 	private static SRLabeler srl;
+	private static NERTagger ner;
 
 	PrePipelineData ppd;
 
@@ -33,10 +37,13 @@ public class PipelineTest {
 		snlp.init();
 		srl = new SRLabeler();
 		srl.init();
+		ner = new NERTagger();
+		ner.init();
 		masr = new MultiASRPipelineStage();
 		masr.init();
 	}
 
+	@Ignore
 	@Test
 	public void fullPipelineTest() {
 		ppd = new PrePipelineData();
@@ -52,6 +59,7 @@ public class PipelineTest {
 		try {
 			masr.exec(ppd);
 			snlp.exec(ppd);
+			ner.exec(ppd);
 			srl.exec(ppd);
 			gb.exec(ppd);
 		} catch (final PipelineStageException e) {
@@ -65,5 +73,27 @@ public class PipelineTest {
 			e.printStackTrace();
 		}
 	}
+
+	@Test
+	public void testWithTranscription() {
+		ppd = new PrePipelineData();
+		ppd.setMainHypothesis(StringToHypothesis.stringToMainHypothesis("Go to the fridge open its door and grab the orange juice"));
+		try {
+			snlp.exec(ppd);
+			ner.exec(ppd);
+			srl.exec(ppd);
+			gb.exec(ppd);
+		} catch (final PipelineStageException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			System.out.println(ppd.getGraph().showGraph());
+		} catch (final MissingDataException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 
 }
