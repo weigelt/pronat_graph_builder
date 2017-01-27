@@ -157,7 +157,7 @@ public class GraphBuilder implements IPipelineStage {
 			node.setAttributeValue("endTime", tok.getEndTime());
 			node.setAttributeValue("alternativesCount", tok.getAlternatives().size());
 			node.setAttributeValue("lemma", tok.getLemma());
-			node.setAttributeValue("stemma", tok.getStemma());
+			node.setAttributeValue("stemma", tok.getStem());
 
 			nodesForTokens.put(tok, node);
 			for (int i = 0; i < tok.getAlternatives().size(); i++) {
