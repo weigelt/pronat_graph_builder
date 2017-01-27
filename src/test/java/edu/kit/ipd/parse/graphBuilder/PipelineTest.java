@@ -39,13 +39,13 @@ public class PipelineTest {
 		srl.init();
 		ner = new NERTagger();
 		ner.init();
-		masr = new MultiASRPipelineStage();
-		masr.init();
 	}
 
 	@Ignore
 	@Test
 	public void fullPipelineTest() {
+		masr = new MultiASRPipelineStage();
+		masr.init();
 		ppd = new PrePipelineData();
 		Path inputPath = null;
 		try {
