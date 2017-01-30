@@ -126,8 +126,6 @@ public class GraphBuilder implements IPipelineStage {
 		wordType.addAttributeToType("String", "lemma");
 		wordType.addAttributeToType("String", "stem");
 
-		arcType.addAttributeToType("String", "value");
-
 		altType.addAttributeToType("String", "value");
 		altType.addAttributeToType("String", "type");
 		altType.addAttributeToType("int", "position");
