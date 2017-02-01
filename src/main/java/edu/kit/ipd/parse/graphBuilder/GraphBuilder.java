@@ -132,9 +132,9 @@ public class GraphBuilder implements IPipelineStage {
 		altType.addAttributeToType("String", "value");
 		altType.addAttributeToType("String", "type");
 		altType.addAttributeToType("int", "position");
-		altType.addAttributeToType("float", "asrConfidence");
-		altType.addAttributeToType("float", "startTime");
-		altType.addAttributeToType("float", "endTime");
+		altType.addAttributeToType("double", "asrConfidence");
+		altType.addAttributeToType("double", "startTime");
+		altType.addAttributeToType("double", "endTime");
 
 		altRelType.addAttributeToType("int", "number");
 
