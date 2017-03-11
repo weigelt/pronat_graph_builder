@@ -161,6 +161,7 @@ public class GraphBuilder implements IPipelineStage {
 			node.setAttributeValue("ner", tok.getNer());
 			node.setAttributeValue("ner", tok.getNer());
 			node.setAttributeValue("lemma", tok.getLemma());
+			node.setAttributeValue("stem", tok.getStem());
 			node.setAttributeValue("verifiedByDialogAgent", false);
 
 			nodesForTokens.put(tok, node);
