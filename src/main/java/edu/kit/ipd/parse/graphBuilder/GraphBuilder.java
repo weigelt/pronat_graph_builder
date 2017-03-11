@@ -126,6 +126,7 @@ public class GraphBuilder implements IPipelineStage {
 		wordType.addAttributeToType("String", "ner");
 		wordType.addAttributeToType("String", "lemma");
 		wordType.addAttributeToType("String", "stem");
+		wordType.addAttributeToType("boolean", "verifiedByDialogAgent");
 
 		arcType.addAttributeToType("String", "value");
 
@@ -158,8 +159,9 @@ public class GraphBuilder implements IPipelineStage {
 			node.setAttributeValue("endTime", tok.getEndTime());
 			node.setAttributeValue("alternativesCount", tok.getAlternatives().size());
 			node.setAttributeValue("ner", tok.getNer());
+			node.setAttributeValue("ner", tok.getNer());
 			node.setAttributeValue("lemma", tok.getLemma());
-			node.setAttributeValue("stem", tok.getStem());
+			node.setAttributeValue("verifiedByDialogAgent", false);
 
 			nodesForTokens.put(tok, node);
 			for (int i = 0; i < tok.getAlternatives().size(); i++) {
