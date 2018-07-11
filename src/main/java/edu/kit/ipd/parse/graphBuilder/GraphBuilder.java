@@ -29,6 +29,7 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
 
 @MetaInfServices(IPipelineStage.class)
 public class GraphBuilder implements IPipelineStage {
+	public static final String SENTENCE_NUMBER_ATTRIBUTE = "sentenceNumber";
 
 	private static final Logger logger = LoggerFactory.getLogger(GraphBuilder.class);
 
@@ -127,6 +128,7 @@ public class GraphBuilder implements IPipelineStage {
 		wordType.addAttributeToType("String", "lemma");
 		wordType.addAttributeToType("String", "stem");
 		wordType.addAttributeToType("boolean", "verifiedByDialogAgent");
+		wordType.addAttributeToType("int", SENTENCE_NUMBER_ATTRIBUTE);
 
 		arcType.addAttributeToType("String", "value");
 
@@ -162,6 +164,7 @@ public class GraphBuilder implements IPipelineStage {
 			node.setAttributeValue("lemma", tok.getLemma());
 			node.setAttributeValue("stem", tok.getStem());
 			node.setAttributeValue("verifiedByDialogAgent", false);
+			node.setAttributeValue(SENTENCE_NUMBER_ATTRIBUTE, tok.getSentenceNumber());
 
 			nodesForTokens.put(tok, node);
 			for (int i = 0; i < tok.getAlternatives().size(); i++) {
