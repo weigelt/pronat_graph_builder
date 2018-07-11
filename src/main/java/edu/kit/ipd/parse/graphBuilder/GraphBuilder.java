@@ -29,7 +29,38 @@ import edu.kit.ipd.parse.luna.tools.ConfigManager;
 
 @MetaInfServices(IPipelineStage.class)
 public class GraphBuilder implements IPipelineStage {
+
+	public static final String EVENT_TYPES_ATTRIBUTE = "eventTypes";
+	public static final String FRAME_NET_FRAMES_ATTRIBUTE = "frameNetFrames";
+	public static final String VERB_NET_FRAMES_ATTRIBUTE = "verbNetFrames";
+	public static final String PROP_BANK_ROLESET_DESCR_ATTRIBUTE = "propBankRolesetDescr";
+	public static final String PROP_BANK_ROLESET_ID_ATTRIBUTE = "propBankRolesetID";
+	public static final String CORRESPONDING_VERB_ATTRIBUTE = "correspondingVerb";
+	public static final String ROLE_CONFIDENCE_ATTRIBUTE = "roleConfidence";
+	public static final String FN_ROLE_ATTRIBUTE = "fnRole";
+	public static final String VN_ROLE_ATTRIBUTE = "vnRole";
+	public static final String PB_ROLE_ATTRIBUTE = "pbRole";
+	public static final String ROLE_ATTRIBUTE = "role";
+	public static final String NUMBER_ATTRIBUTE = "number";
 	public static final String SENTENCE_NUMBER_ATTRIBUTE = "sentenceNumber";
+	public static final String VERIFIED_BY_DIALOG_AGENT_ATTRIBUTE = "verifiedByDialogAgent";
+	public static final String STEM_ATTRIBUTE = "stem";
+	public static final String LEMMA_ATTRIBUTE = "lemma";
+	public static final String NER_ATTRIBUTE = "ner";
+	public static final String END_TIME_ATTRIBUTE = "endTime";
+	public static final String START_TIME_ATTRIBUTE = "startTime";
+	public static final String ALTERNATIVES_COUNT_ATTRIBUTE = "alternativesCount";
+	public static final String ASR_CONFIDENCE_ATTRIBUTE = "asrConfidence";
+	public static final String POSITION_ATTRIBUTE = "position";
+	public static final String INSTRUCTION_NUMBER_ATTRIBUTE = "instructionNumber";
+	public static final String SUCCESSORS_ATTRIBUTE = "successors";
+	public static final String PREDECESSORS_ATTRIBUTE = "predecessors";
+	public static final String TYPE_ATTRIBUTE = "type";
+	public static final String CHUNK_ATTRIBUTE = "chunkName";
+	public static final String CHUNK_IOB_ATTRIBUTE = "chunkIOB";
+	public static final String POS_ATTRIBUTE = "pos";
+	public static final String WORD_ATTRIBUTE = "value";
+	public static final String VALUE_ATTRIBUTE = "value";
 
 	private static final Logger logger = LoggerFactory.getLogger(GraphBuilder.class);
 
@@ -111,35 +142,35 @@ public class GraphBuilder implements IPipelineStage {
 
 		//TODO: make the following variable, e.g., wrap attributes of the token in an object with iterable elements
 
-		wordType.addAttributeToType("String", "value");
-		wordType.addAttributeToType("String", "pos");
-		wordType.addAttributeToType("String", "chunkIOB");
-		wordType.addAttributeToType("String", "chunkName");
-		wordType.addAttributeToType("String", "type");
-		wordType.addAttributeToType("int", "predecessors");
-		wordType.addAttributeToType("int", "successors");
-		wordType.addAttributeToType("int", "instructionNumber");
-		wordType.addAttributeToType("int", "position");
-		wordType.addAttributeToType("double", "asrConfidence");
-		wordType.addAttributeToType("int", "alternativesCount");
-		wordType.addAttributeToType("double", "startTime");
-		wordType.addAttributeToType("double", "endTime");
-		wordType.addAttributeToType("String", "ner");
-		wordType.addAttributeToType("String", "lemma");
-		wordType.addAttributeToType("String", "stem");
-		wordType.addAttributeToType("boolean", "verifiedByDialogAgent");
+		wordType.addAttributeToType("String", WORD_ATTRIBUTE);
+		wordType.addAttributeToType("String", POS_ATTRIBUTE);
+		wordType.addAttributeToType("String", CHUNK_IOB_ATTRIBUTE);
+		wordType.addAttributeToType("String", CHUNK_ATTRIBUTE);
+		wordType.addAttributeToType("String", TYPE_ATTRIBUTE);
+		wordType.addAttributeToType("int", PREDECESSORS_ATTRIBUTE);
+		wordType.addAttributeToType("int", SUCCESSORS_ATTRIBUTE);
+		wordType.addAttributeToType("int", INSTRUCTION_NUMBER_ATTRIBUTE);
+		wordType.addAttributeToType("int", POSITION_ATTRIBUTE);
+		wordType.addAttributeToType("double", ASR_CONFIDENCE_ATTRIBUTE);
+		wordType.addAttributeToType("int", ALTERNATIVES_COUNT_ATTRIBUTE);
+		wordType.addAttributeToType("double", START_TIME_ATTRIBUTE);
+		wordType.addAttributeToType("double", END_TIME_ATTRIBUTE);
+		wordType.addAttributeToType("String", NER_ATTRIBUTE);
+		wordType.addAttributeToType("String", LEMMA_ATTRIBUTE);
+		wordType.addAttributeToType("String", STEM_ATTRIBUTE);
+		wordType.addAttributeToType("boolean", VERIFIED_BY_DIALOG_AGENT_ATTRIBUTE);
 		wordType.addAttributeToType("int", SENTENCE_NUMBER_ATTRIBUTE);
 
-		arcType.addAttributeToType("String", "value");
+		arcType.addAttributeToType("String", VALUE_ATTRIBUTE);
 
-		altType.addAttributeToType("String", "value");
-		altType.addAttributeToType("String", "type");
-		altType.addAttributeToType("int", "position");
-		altType.addAttributeToType("double", "asrConfidence");
-		altType.addAttributeToType("double", "startTime");
-		altType.addAttributeToType("double", "endTime");
+		altType.addAttributeToType("String", WORD_ATTRIBUTE);
+		altType.addAttributeToType("String", TYPE_ATTRIBUTE);
+		altType.addAttributeToType("int", POSITION_ATTRIBUTE);
+		altType.addAttributeToType("double", ASR_CONFIDENCE_ATTRIBUTE);
+		altType.addAttributeToType("double", START_TIME_ATTRIBUTE);
+		altType.addAttributeToType("double", END_TIME_ATTRIBUTE);
 
-		altRelType.addAttributeToType("int", "number");
+		altRelType.addAttributeToType("int", NUMBER_ATTRIBUTE);
 
 		HashMap<Token, INode> nodesForTokens = new HashMap<>();
 		HashSet<SRLToken> srlTokens = new HashSet<>();
@@ -147,43 +178,43 @@ public class GraphBuilder implements IPipelineStage {
 		INode lastNode = null;
 		for (final Token tok : tokens) {
 			final INode node = graph.createNode(wordType);
-			node.setAttributeValue("value", tok.getWord());
-			node.setAttributeValue("pos", tok.getPos().toString());
-			node.setAttributeValue("chunkIOB", tok.getChunkIOB().toString());
-			node.setAttributeValue("chunkName", tok.getChunk().getName());
-			node.setAttributeValue("predecessors", tok.getChunk().getPredecessor());
-			node.setAttributeValue("successors", tok.getChunk().getSuccessor());
-			node.setAttributeValue("instructionNumber", tok.getInstructionNumber());
-			node.setAttributeValue("position", tok.getPosition());
-			node.setAttributeValue("type", tok.getType().toString());
-			node.setAttributeValue("asrConfidence", tok.getConfidence());
-			node.setAttributeValue("startTime", tok.getStartTime());
-			node.setAttributeValue("endTime", tok.getEndTime());
-			node.setAttributeValue("alternativesCount", tok.getAlternatives().size());
-			node.setAttributeValue("ner", tok.getNer());
-			node.setAttributeValue("lemma", tok.getLemma());
-			node.setAttributeValue("stem", tok.getStem());
-			node.setAttributeValue("verifiedByDialogAgent", false);
+			node.setAttributeValue(WORD_ATTRIBUTE, tok.getWord());
+			node.setAttributeValue(POS_ATTRIBUTE, tok.getPos().toString());
+			node.setAttributeValue(CHUNK_IOB_ATTRIBUTE, tok.getChunkIOB().toString());
+			node.setAttributeValue(CHUNK_ATTRIBUTE, tok.getChunk().getName());
+			node.setAttributeValue(PREDECESSORS_ATTRIBUTE, tok.getChunk().getPredecessor());
+			node.setAttributeValue(SUCCESSORS_ATTRIBUTE, tok.getChunk().getSuccessor());
+			node.setAttributeValue(INSTRUCTION_NUMBER_ATTRIBUTE, tok.getInstructionNumber());
+			node.setAttributeValue(POSITION_ATTRIBUTE, tok.getPosition());
+			node.setAttributeValue(TYPE_ATTRIBUTE, tok.getType().toString());
+			node.setAttributeValue(ASR_CONFIDENCE_ATTRIBUTE, tok.getConfidence());
+			node.setAttributeValue(START_TIME_ATTRIBUTE, tok.getStartTime());
+			node.setAttributeValue(END_TIME_ATTRIBUTE, tok.getEndTime());
+			node.setAttributeValue(ALTERNATIVES_COUNT_ATTRIBUTE, tok.getAlternatives().size());
+			node.setAttributeValue(NER_ATTRIBUTE, tok.getNer());
+			node.setAttributeValue(LEMMA_ATTRIBUTE, tok.getLemma());
+			node.setAttributeValue(STEM_ATTRIBUTE, tok.getStem());
+			node.setAttributeValue(VERIFIED_BY_DIALOG_AGENT_ATTRIBUTE, false);
 			node.setAttributeValue(SENTENCE_NUMBER_ATTRIBUTE, tok.getSentenceNumber());
 
 			nodesForTokens.put(tok, node);
 			for (int i = 0; i < tok.getAlternatives().size(); i++) {
 				final AlternativeHypothesisToken altHyp = tok.getAlternative(i);
 				final INode alternativeToken = graph.createNode(altType);
-				alternativeToken.setAttributeValue("value", altHyp.getWord());
-				alternativeToken.setAttributeValue("position", altHyp.getPosition());
-				alternativeToken.setAttributeValue("type", altHyp.getType().toString());
-				alternativeToken.setAttributeValue("asrConfidence", altHyp.getConfidence());
-				alternativeToken.setAttributeValue("startTime", altHyp.getStartTime());
-				alternativeToken.setAttributeValue("endTime", altHyp.getEndTime());
+				alternativeToken.setAttributeValue(WORD_ATTRIBUTE, altHyp.getWord());
+				alternativeToken.setAttributeValue(POSITION_ATTRIBUTE, altHyp.getPosition());
+				alternativeToken.setAttributeValue(TYPE_ATTRIBUTE, altHyp.getType().toString());
+				alternativeToken.setAttributeValue(ASR_CONFIDENCE_ATTRIBUTE, altHyp.getConfidence());
+				alternativeToken.setAttributeValue(START_TIME_ATTRIBUTE, altHyp.getStartTime());
+				alternativeToken.setAttributeValue(END_TIME_ATTRIBUTE, altHyp.getEndTime());
 				final IArc altRel = graph.createArc(node, alternativeToken, altRelType);
-				altRel.setAttributeValue("number", i);
+				altRel.setAttributeValue(NUMBER_ATTRIBUTE, i);
 			}
 
 			//add arcs between main hyp tokens
 			if (lastNode != null) {
 				final IArc arc = graph.createArc(lastNode, node, arcType);
-				arc.setAttributeValue("value", "NEXT");
+				arc.setAttributeValue(WORD_ATTRIBUTE, "NEXT");
 			}
 
 			if (tok instanceof SRLToken) {
@@ -200,17 +231,17 @@ public class GraphBuilder implements IPipelineStage {
 				srlArcType = graph.getArcType(SRL_ARC_TYPE);
 			} else {
 				srlArcType = graph.createArcType(SRL_ARC_TYPE);
-				srlArcType.addAttributeToType("String", "role");
-				srlArcType.addAttributeToType("String", "pbRole");
-				srlArcType.addAttributeToType("String", "vnRole");
-				srlArcType.addAttributeToType("String", "fnRole");
-				srlArcType.addAttributeToType("Double", "roleConfidence");
-				srlArcType.addAttributeToType("String", "correspondingVerb");
-				srlArcType.addAttributeToType("String", "propBankRolesetID");
-				srlArcType.addAttributeToType("String", "propBankRolesetDescr");
-				srlArcType.addAttributeToType("String", "verbNetFrames");
-				srlArcType.addAttributeToType("String", "frameNetFrames");
-				srlArcType.addAttributeToType("String", "eventTypes");
+				srlArcType.addAttributeToType("String", ROLE_ATTRIBUTE);
+				srlArcType.addAttributeToType("String", PB_ROLE_ATTRIBUTE);
+				srlArcType.addAttributeToType("String", VN_ROLE_ATTRIBUTE);
+				srlArcType.addAttributeToType("String", FN_ROLE_ATTRIBUTE);
+				srlArcType.addAttributeToType("Double", ROLE_CONFIDENCE_ATTRIBUTE);
+				srlArcType.addAttributeToType("String", CORRESPONDING_VERB_ATTRIBUTE);
+				srlArcType.addAttributeToType("String", PROP_BANK_ROLESET_ID_ATTRIBUTE);
+				srlArcType.addAttributeToType("String", PROP_BANK_ROLESET_DESCR_ATTRIBUTE);
+				srlArcType.addAttributeToType("String", VERB_NET_FRAMES_ATTRIBUTE);
+				srlArcType.addAttributeToType("String", FRAME_NET_FRAMES_ATTRIBUTE);
+				srlArcType.addAttributeToType("String", EVENT_TYPES_ATTRIBUTE);
 			}
 
 			for (SRLToken srlToken : srlTokens) {
@@ -236,9 +267,9 @@ public class GraphBuilder implements IPipelineStage {
 					String[] roleDescription;
 					if ((roleDescription = srlToken.getRoleDescriptions(role)) != null) {
 
-						arc.setAttributeValue("pbRole", roleDescription[0]);
-						arc.setAttributeValue("vnRole", roleDescription[1]);
-						arc.setAttributeValue("fnRole", roleDescription[2]);
+						arc.setAttributeValue(PB_ROLE_ATTRIBUTE, roleDescription[0]);
+						arc.setAttributeValue(VN_ROLE_ATTRIBUTE, roleDescription[1]);
+						arc.setAttributeValue(FN_ROLE_ATTRIBUTE, roleDescription[2]);
 
 					}
 					last = roleToken;
@@ -248,14 +279,14 @@ public class GraphBuilder implements IPipelineStage {
 	}
 
 	private void setSharedSRLArcInfos(SRLToken srlToken, IArc arc, String role) {
-		arc.setAttributeValue("role", role);
-		arc.setAttributeValue("correspondingVerb", srlToken.getCorrespondingVerb());
-		arc.setAttributeValue("roleConfidence", srlToken.getRoleConfidence());
-		arc.setAttributeValue("propBankRolesetID", srlToken.getPbRolesetID());
-		arc.setAttributeValue("propBankRolesetDescr", srlToken.getPbRolesetDescr());
-		arc.setAttributeValue("verbNetFrames", Arrays.toString(srlToken.getVnFrames()));
-		arc.setAttributeValue("frameNetFrames", Arrays.toString(srlToken.getFnFrames()));
-		arc.setAttributeValue("eventTypes", Arrays.toString(srlToken.getEventTypes()));
+		arc.setAttributeValue(ROLE_ATTRIBUTE, role);
+		arc.setAttributeValue(CORRESPONDING_VERB_ATTRIBUTE, srlToken.getCorrespondingVerb());
+		arc.setAttributeValue(ROLE_CONFIDENCE_ATTRIBUTE, srlToken.getRoleConfidence());
+		arc.setAttributeValue(PROP_BANK_ROLESET_ID_ATTRIBUTE, srlToken.getPbRolesetID());
+		arc.setAttributeValue(PROP_BANK_ROLESET_DESCR_ATTRIBUTE, srlToken.getPbRolesetDescr());
+		arc.setAttributeValue(VERB_NET_FRAMES_ATTRIBUTE, Arrays.toString(srlToken.getVnFrames()));
+		arc.setAttributeValue(FRAME_NET_FRAMES_ATTRIBUTE, Arrays.toString(srlToken.getFnFrames()));
+		arc.setAttributeValue(EVENT_TYPES_ATTRIBUTE, Arrays.toString(srlToken.getEventTypes()));
 	}
 
 	@Override
