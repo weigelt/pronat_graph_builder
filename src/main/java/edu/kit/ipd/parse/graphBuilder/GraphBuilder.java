@@ -1,10 +1,11 @@
 package edu.kit.ipd.parse.graphBuilder;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
@@ -172,7 +173,7 @@ public class GraphBuilder implements IPipelineStage {
 
 		altRelType.addAttributeToType("int", NUMBER_ATTRIBUTE);
 
-		HashMap<Token, INode> nodesForTokens = new HashMap<>();
+		Map<Token, INode> nodesForTokens = new TreeMap<>();
 		HashSet<SRLToken> srlTokens = new HashSet<>();
 
 		INode lastNode = null;
@@ -251,7 +252,7 @@ public class GraphBuilder implements IPipelineStage {
 		return graph;
 	}
 
-	private void createSRLArcs(SRLToken srlToken, IArcType srlArcType, HashMap<Token, INode> nodesForTokens, IGraph graph) {
+	private void createSRLArcs(SRLToken srlToken, IArcType srlArcType, Map<Token, INode> nodesForTokens, IGraph graph) {
 		Token last = srlToken;
 		for (Token verb : srlToken.getVerbTokens()) {
 			IArc arc = graph.createArc(nodesForTokens.get(last), nodesForTokens.get(verb), srlArcType);
