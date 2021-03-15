@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.graphBuilder;
+package edu.kit.ipd.pronat.graph_builder;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -6,18 +6,18 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import edu.kit.ipd.pronat.multiasr.MultiASRPipelineStage;
+import edu.kit.ipd.pronat.prepipedatamodel.PrePipelineData;
+import edu.kit.ipd.pronat.prepipedatamodel.tools.StringToHypothesis;
+import edu.kit.ipd.pronat.shallow_nlp.ShallowNLP;
+import edu.kit.ipd.pronat.srl.SRLabeler;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import edu.kit.ipd.parse.luna.data.MissingDataException;
-import edu.kit.ipd.parse.luna.data.PrePipelineData;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
-import edu.kit.ipd.parse.luna.tools.StringToHypothesis;
-import edu.kit.ipd.parse.multiasr.MultiASRPipelineStage;
-import edu.kit.ipd.parse.ner.NERTagger;
-import edu.kit.ipd.parse.shallownlp.ShallowNLP;
-import edu.kit.ipd.parse.srlabeler.SRLabeler;
+import edu.kit.ipd.pronat.ner.NERTagger;
 
 public class PipelineTest {
 
@@ -94,6 +94,5 @@ public class PipelineTest {
 			e.printStackTrace();
 		}
 	}
-
 
 }

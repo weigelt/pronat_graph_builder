@@ -1,4 +1,4 @@
-package edu.kit.ipd.parse.graphBuilder;
+package edu.kit.ipd.pronat.graph_builder;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -7,6 +7,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
 
+import edu.kit.ipd.pronat.prepipedatamodel.PrePipelineData;
+import edu.kit.ipd.pronat.prepipedatamodel.token.AlternativeHypothesisToken;
+import edu.kit.ipd.pronat.prepipedatamodel.token.SRLToken;
+import edu.kit.ipd.pronat.prepipedatamodel.token.Token;
 import org.kohsuke.MetaInfServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +18,6 @@ import org.slf4j.LoggerFactory;
 import edu.kit.ipd.parse.luna.data.AbstractPipelineData;
 import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.data.PipelineDataCastException;
-import edu.kit.ipd.parse.luna.data.PrePipelineData;
-import edu.kit.ipd.parse.luna.data.token.AlternativeHypothesisToken;
-import edu.kit.ipd.parse.luna.data.token.SRLToken;
-import edu.kit.ipd.parse.luna.data.token.Token;
 import edu.kit.ipd.parse.luna.graph.IArc;
 import edu.kit.ipd.parse.luna.graph.IArcType;
 import edu.kit.ipd.parse.luna.graph.IGraph;
@@ -91,7 +91,7 @@ public class GraphBuilder implements IPipelineStage {
 	public void exec(AbstractPipelineData data) throws PipelineStageException {
 		// try to get data as pre pipeline data. If this fails, return
 		try {
-			prePipeData = data.asPrePipelineData();
+			prePipeData = (PrePipelineData) data.asPrePipelineData();
 		} catch (final PipelineDataCastException e) {
 			logger.error("Cannot process on data - PipelineData unreadable", e);
 			throw new PipelineStageException(e);
