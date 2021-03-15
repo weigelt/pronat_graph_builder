@@ -7,7 +7,7 @@
         <artifactId>pronat</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>graphBuilder</artifactId>
+    <artifactId>graph_builder</artifactId>
     <version>0.0.5-SNAPSHOT</version>
     <name>ProNat Graph Builder</name>
     <repositories>
