@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import edu.kit.ipd.pronat.multiasr.MultiASRPipelineStage;
+import edu.kit.ipd.pronat.ner.NERTagger;
 import edu.kit.ipd.pronat.prepipedatamodel.PrePipelineData;
 import edu.kit.ipd.pronat.prepipedatamodel.tools.StringToHypothesis;
 import edu.kit.ipd.pronat.shallow_nlp.ShallowNLP;
@@ -17,7 +18,6 @@ import org.junit.Test;
 
 import edu.kit.ipd.parse.luna.data.MissingDataException;
 import edu.kit.ipd.parse.luna.pipeline.PipelineStageException;
-import edu.kit.ipd.pronat.ner.NERTagger;
 
 public class PipelineTest {
 
